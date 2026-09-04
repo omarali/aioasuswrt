@@ -426,6 +426,7 @@ class AsusWrt:
             None,
             None,
         ]
+        self.interface: str = interface
         self.dnsmasq: str = dnsmasq
         self._previous_rx: int = 0
         self._previous_tx: int = 0
@@ -629,7 +630,7 @@ class AsusWrt:
         _now = time()
         delay = _now - self._last_transaction_run
         self._last_transaction_run = _now
-        eth0rx = eth0tx = 0
+        wanrx = wantx = 0
         vlanrx = vlantx = 0
 
         net_dev_lines = await self.connection.async_run_command(_NETDEV_CMD)
@@ -640,11 +641,11 @@ class AsusWrt:
         for line in net_dev_lines[2:]:
             parts = re.split(r"[\s:]+", line.strip())
             # NOTES:
-            #  * assuming eth0 always comes before vlan1 in dev file
+            #  * assuming wan interface (eth0) always comes before vlan1 in dev file
             #  * counted bytes wrap around at 0xFFFFFFFF
-            if parts[0] == "eth0":
-                eth0rx = int(parts[1])  # received bytes
-                eth0tx = int(parts[9])  # transmitted bytes
+            if parts[0] == self.interface:
+                wanrx = int(parts[1])  # received bytes
+                wantx = int(parts[9])  # transmitted bytes
             elif parts[0] == "vlan1":
                 vlanrx = int(parts[1])  # received bytes
                 vlantx = int(parts[9])  # transmitted bytes
@@ -652,9 +653,9 @@ class AsusWrt:
         def handle32bitwrap(v: int) -> int:
             return v if v > 0 else v + 0xFFFFFFFF
 
-        # the true amount of Internet related data equals eth0 - vlan1
-        inetrx = handle32bitwrap(eth0rx - vlanrx)
-        inettx = handle32bitwrap(eth0tx - vlantx)
+        # the true amount of Internet related data equals wan - vlan1
+        inetrx = handle32bitwrap(wanrx - vlanrx)
+        inettx = handle32bitwrap(wantx - vlantx)
 
         rx = int(handle32bitwrap(inetrx - self._previous_rx) / delay)
         tx = int(handle32bitwrap(inettx - self._previous_tx) / delay)

@@ -307,7 +307,7 @@ class AsusWrt:
 
         def _add_if_match(line: str) -> TransferRates | None:
             parts = split(r"[\s:]+", line.strip())
-            if parts[0] in ["eth0", "vlan1"]:
+            if parts[0] in [self.wan_interface, "vlan1"]:
                 return TransferRates(
                     handle32bitwrap(int(parts[1])),
                     handle32bitwrap(int(parts[9])),

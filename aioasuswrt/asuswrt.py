@@ -305,18 +305,20 @@ class AsusWrt:
         def handle32bitwrap(v: int) -> int:
             return v if v > 0 else v + _BIT_WRAP
 
-        def _add_if_match(line: str) -> TransferRates | None:
+        rates_dict: dict[str, TransferRates] = {}
+        for line in list(net_dev_lines)[2:]:
             parts = split(r"[\s:]+", line.strip())
-            if parts[0] in ["eth0", "vlan1"]:
-                return TransferRates(
+            if (
+                parts[0] in [self.wan_interface, "vlan1"]
+                and parts[0] not in rates_dict
+            ):
+                rates_dict[parts[0]] = TransferRates(
                     handle32bitwrap(int(parts[1])),
                     handle32bitwrap(int(parts[9])),
                 )
-            return None
 
-        eth, vlan = list(
-            filter(None, map(_add_if_match, list(net_dev_lines)[2:]))
-        )
+        eth = rates_dict.get(self.wan_interface, TransferRates(0, 0))
+        vlan = rates_dict.get("vlan1", TransferRates(0, 0))
 
         inetrx = handle32bitwrap(eth.rx - vlan.rx)
         inettx = handle32bitwrap(eth.tx - vlan.tx)

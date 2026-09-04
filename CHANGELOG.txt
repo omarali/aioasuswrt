@@ -1,6 +1,14 @@
-Version 2.0.8
+Version 2.2.2
+* Fix transfer rates error when wan interface or vlan1 is missing from netdev output
+
+Version 2.2.1
+* Fix mypy type error in asuswrt.py
+
+Version 2.2.0
 * Rework connected devices after 48h testing (filter out leases that are not connected)
 * Add error handling for connection error to Telnet
+
+Version 2.0.8
 
 Version 2.0.7
 * Checked and fixed `get_transfer_rates`

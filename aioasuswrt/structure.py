@@ -174,6 +174,8 @@ class TempCommand(NamedTuple):
 class _Regex(NamedTuple):
     """Regex Mapped to a key."""
 
+    TRX_PART: Pattern[str] = re_compile(r"[\s:]+")
+
     MEMINFO: Pattern[str] = re_compile(
         r"(?P<label>(.+[a-zA-Z\(\)]))[:\s]+\s(?P<kb>([\d]+))"
     )

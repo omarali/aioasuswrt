@@ -2,7 +2,6 @@
 
 from collections.abc import Iterable
 from logging import getLogger
-from re import finditer, split
 from time import time
 from typing import cast, final
 
@@ -307,7 +306,7 @@ class AsusWrt:
 
         rates_dict: dict[str, TransferRates] = {}
         for line in list(net_dev_lines)[2:]:
-            parts = split(r"[\s:]+", line.strip())
+            parts = REGEX.TRX_PART.split(line.strip())
             if (
                 parts[0] in [self.wan_interface, "vlan1"]
                 and parts[0] not in rates_dict
@@ -518,7 +517,7 @@ class AsusWrt:
             return None
 
         vpns: list[dict[str, str]] = []
-        for m in finditer(REGEX.VPN_LIST, vpn_list):
+        for m in REGEX.VPN_LIST.finditer(vpn_list):
             vpn_id = m.group("id")
             pid = await self._connection.run_command(
                 Command.GET_PID_OF.format(name=f"vpnclient{vpn_id}")

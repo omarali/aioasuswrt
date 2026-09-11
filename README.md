@@ -49,7 +49,7 @@ import sys
 
 from aioasuswrt.asuswrt import AsusWrt
 
-component = AsusWrt('192.168.1.1', 22, username='****', password='****')
+component = AsusWrt("192.168.1.1", 22, username="****", password="****")
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
@@ -71,7 +71,6 @@ async def print_data():
         i += 1
         if i > 6:
             break
-
 
 
 loop = asyncio.get_event_loop()

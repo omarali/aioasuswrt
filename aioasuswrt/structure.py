@@ -312,7 +312,7 @@ _LABEL_MAC = {"label_mac"}
 
 _VPN = {"vpnc_clientlist", "vpn_client"}
 
-Nvram = _Nvram(
+NVRAM = _Nvram(
     DHCP=_DHCP,
     MODEL=_MODEL,
     QOS=_QOS,

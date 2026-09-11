@@ -17,6 +17,7 @@ from .parsers import (
     parse_wl,
 )
 from .structure import (
+    NVRAM,
     REGEX,
     TEMP_COMMANDS,
     AuthConfig,
@@ -24,7 +25,6 @@ from .structure import (
     Device,
     DNSRecord,
     Mode,
-    Nvram,
     Settings,
     TempCommand,
     TransferRates,
@@ -237,7 +237,7 @@ class AsusWrt:
         Args:
             parameter_to_fetch (str): The parameter we are targeting to fetch.
         """
-        nvram_set = cast(set[str], Nvram.get(parameter_to_fetch, set()))
+        nvram_set = cast(set[str], NVRAM.get(parameter_to_fetch, set()))
         target: str = r"\|".join(nvram_set)
         cmd = Command.NVRAM.format(target)
 
